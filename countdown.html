@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown to Freedom</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(41, 196, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(118, 74, 188, 0.05) 0%, transparent 50%),
+                linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #e8eaed;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background Elements */
+        .bg-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+
+        .particle:nth-child(1) {
+            width: 120px;
+            height: 120px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.15) 0%, transparent 70%);
+        }
+
+        .particle:nth-child(2) {
+            width: 80px;
+            height: 80px;
+            top: 60%;
+            right: 15%;
+            animation-delay: -5s;
+            animation-duration: 20s;
+            background: radial-gradient(circle, rgba(118, 74, 188, 0.1) 0%, transparent 70%);
+        }
+
+        .particle:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: -10s;
+            animation-duration: 25s;
+            background: radial-gradient(circle, rgba(41, 196, 255, 0.1) 0%, transparent 70%);
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.3;
+            }
+            25% {
+                transform: translateY(-20px) rotate(90deg);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translateY(0) rotate(180deg);
+                opacity: 0.3;
+            }
+            75% {
+                transform: translateY(20px) rotate(270deg);
+                opacity: 0.5;
+            }
+        }
+
+        .container {
+            max-width: 850px;
+            width: 100%;
+            text-align: center;
+            padding: 40px 35px;
+            background: rgba(18, 18, 30, 0.75);
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.03),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Subtle border animation */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            right: -1px;
+            bottom: -1px;
+            background: linear-gradient(45deg, 
+                transparent, 
+                rgba(102, 126, 234, 0.2), 
+                rgba(118, 74, 188, 0.2), 
+                transparent);
+            border-radius: 25px;
+            z-index: -1;
+            opacity: 0;
+            animation: borderGlow 8s ease-in-out infinite;
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 0.5; }
+        }
+
+        h1 {
+            font-weight: 500;
+            font-size: 2.1rem;
+            margin-bottom: 12px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+            position: relative;
+            display: inline-block;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 25%;
+            width: 50%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #667eea, #764ba2, transparent);
+            border-radius: 2px;
+        }
+
+        .subtitle {
+            color: #a0a0c0;
+            font-weight: 300;
+            margin-bottom: 45px;
+            font-size: 1.05rem;
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+
+        .countdown-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin: 50px 0;
+        }
+
+        .countdown-unit {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 30px 20px;
+            min-width: 150px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .countdown-unit::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        }
+
+        .countdown-unit::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(102, 126, 234, 0.05) 0%, 
+                transparent 50%, 
+                rgba(118, 74, 188, 0.05) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .countdown-unit:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.35),
+                0 0 20px rgba(102, 126, 234, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .countdown-unit:hover::after {
+            opacity: 1;
+        }
+
+        .unit-icon {
+            margin-bottom: 15px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+
+        .countdown-unit:hover .unit-icon {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .countdown-value {
+            font-size: 3.2rem;
+            font-weight: 600;
+            color: #ffffff;
+            text-shadow: 0 2px 15px rgba(102, 126, 234, 0.3);
+            margin-bottom: 5px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .countdown-value::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 10%;
+            width: 80%;
+            height: 3px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(102, 126, 234, 0.5), 
+                rgba(118, 74, 188, 0.5), 
+                transparent);
+            border-radius: 3px;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .countdown-unit:hover .countdown-value::after {
+            transform: scaleX(1);
+        }
+
+        .countdown-label {
+            font-size: 0.95rem;
+            color: #a0a0c0;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 400;
+            margin-top: 10px;
+        }
+
+        .progress-section {
+            margin: 50px 0;
+            padding: 35px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 
+                0 8px 25px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: var(--progress-width, 0%);
+            height: 100%;
+            background: linear-gradient(90deg, 
+                rgba(102, 126, 234, 0.05), 
+                rgba(118, 74, 188, 0.05));
+            transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 0;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+            color: #a0a0c0;
+            font-weight: 400;
+            position: relative;
+            z-index: 1;
+        }
+
+        .progress-bar-container {
+            height: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
+            position: relative;
+            z-index: 1;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            width: 0%;
+            transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent
+            );
+            animation: shimmer 3s infinite;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-text {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #ffffff;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .progress-text::before {
+            content: '📈';
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .encouragement-section {
+            margin: 50px 0 25px;
+            padding: 40px 35px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            font-size: 1.2rem;
+            line-height: 1.7;
+            color: #e8eaed;
+            font-weight: 400;
+            min-height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 
+                0 8px 25px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .encouragement-section::before {
+            content: '"';
+            position: absolute;
+            top: 20px;
+            left: 25px;
+            font-size: 5rem;
+            color: rgba(102, 126, 234, 0.15);
+            font-family: Georgia, serif;
+            line-height: 1;
+            animation: floatQuote 4s ease-in-out infinite;
+        }
+
+        .encouragement-section::after {
+            content: '"';
+            position: absolute;
+            bottom: 20px;
+            right: 25px;
+            font-size: 5rem;
+            color: rgba(102, 126, 234, 0.15);
+            font-family: Georgia, serif;
+            line-height: 1;
+            animation: floatQuote 4s ease-in-out infinite reverse;
+        }
+
+        @keyframes floatQuote {
+            0%, 100% { transform: translateY(0) scale(1); opacity: 0.15; }
+            50% { transform: translateY(-10px) scale(1.05); opacity: 0.25; }
+        }
+
+        .message-label {
+            font-size: 0.9rem;
+            color: #a0a0c0;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .message-label::before {
+            content: '💭';
+            animation: spin 4s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .footer {
+            margin-top: 40px;
+            color: #8a8aa8;
+            font-size: 0.9rem;
+            text-align: center;
+            line-height: 1.5;
+            position: relative;
+            z-index: 1;
+        }
+
+        .last-updated {
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: #6a6a8a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .last-updated::before {
+            content: '';
+            display: block;
+            width: 10px;
+            height: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                opacity: 1; 
+                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7);
+            }
+            50% { 
+                opacity: 0.5; 
+                box-shadow: 0 0 0 10px rgba(102, 126, 234, 0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+                max-width: 95%;
+            }
+            
+            .countdown-unit {
+                min-width: 120px;
+                padding: 25px 15px;
+            }
+            
+            .countdown-value {
+                font-size: 2.5rem;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+                margin-bottom: 35px;
+            }
+            
+            .encouragement-section {
+                padding: 30px 25px;
+                font-size: 1.1rem;
+                min-height: 140px;
+            }
+            
+            .countdown-container {
+                gap: 15px;
+                margin: 40px 0;
+            }
+            
+            .encouragement-section::before,
+            .encouragement-section::after {
+                font-size: 4rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .countdown-unit {
+                min-width: 105px;
+                padding: 20px 12px;
+            }
+            
+            .countdown-value {
+                font-size: 2.2rem;
+            }
+            
+            .countdown-label {
+                font-size: 0.85rem;
+            }
+            
+            .progress-header {
+                flex-direction: column;
+                gap: 8px;
+                align-items: center;
+            }
+            
+            .encouragement-section {
+                font-size: 1rem;
+                padding: 25px 20px;
+            }
+            
+            .encouragement-section::before,
+            .encouragement-section::after {
+                font-size: 3rem;
+            }
+        }
+
+        /* Selection color */
+        ::selection {
+            background: rgba(102, 126, 234, 0.4);
+            color: #ffffff;
+            text-shadow: none;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(18, 18, 30, 0.5);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(45deg, #764ba2, #667eea);
+        }
+
+        /* Loading animation for initial load */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container > * {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .container > *:nth-child(1) { animation-delay: 0.1s; }
+        .container > *:nth-child(2) { animation-delay: 0.2s; }
+        .container > *:nth-child(3) { animation-delay: 0.3s; }
+        .container > *:nth-child(4) { animation-delay: 0.4s; }
+        .container > *:nth-child(5) { animation-delay: 0.5s; }
+        .container > *:nth-child(6) { animation-delay: 0.6s; }
+    </style>
+</head>
+<body>
+    <!-- Animated Background Particles -->
+    <div class="bg-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- SVG Icons (hidden, will be used via JavaScript) -->
+    <svg style="display: none;">
+        <symbol id="icon-months" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M19,4H18V2H16V4H8V2H6V4H5C3.89,4 3,4.9 3,6V20A2,2 0 0,0 5,22H19A2,2 0 0,0 21,20V6A2,2 0 0,0 19,4M19,20H5V10H19V20M19,8H5V6H19V8M12,13H17V18H12V13Z"/>
+        </symbol>
+        <symbol id="icon-days" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
+        </symbol>
+        <symbol id="icon-hours" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M16.24,7.76C15.07,6.58 13.53,6 12,6V12L6,18L7.76,16.24C9.15,14.85 10.92,14 12,14C13.53,14 15.07,14.58 16.24,15.76C17.42,16.94 18,18.47 18,20H20C20,17.47 19.07,14.94 17.66,12.83C19.07,10.72 20,8.19 20,6H18C18,7.53 17.42,9.06 16.24,10.24C15.07,11.42 13.53,12 12,12C10.92,12 9.15,11.15 7.76,9.76L6,8L12,2V4C13.53,4 15.07,4.58 16.24,5.76C17.42,6.94 18,8.47 18,10H20C20,7.53 19.07,5.06 17.66,3C19.07,1.5 20,0 20,0H18C18,1.53 17.42,3.06 16.24,4.24Z"/>
+        </symbol>
+        <symbol id="icon-minutes" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M16.2,16.2L11,13V7H12.5V12.2L17,14.9L16.2,16.2Z"/>
+        </symbol>
+    </svg>
+
+    <div class="container">
+        <h1>Countdown to Freedom</h1>
+        <br></br>
+        <p class="subtitle">Graduation: June 20, 2026</p>
+        
+        <div class="countdown-container">
+            <div class="countdown-unit">
+                <div class="unit-icon">
+                    <svg width="32" height="32">
+                        <use xlink:href="#icon-months"></use>
+                    </svg>
+                </div>
+                <div class="countdown-value" id="months">--</div>
+                <div class="countdown-label">Months</div>
+            </div>
+            <div class="countdown-unit">
+                <div class="unit-icon">
+                    <svg width="32" height="32">
+                        <use xlink:href="#icon-days"></use>
+                    </svg>
+                </div>
+                <div class="countdown-value" id="days">--</div>
+                <div class="countdown-label">Days</div>
+            </div>
+            <div class="countdown-unit">
+                <div class="unit-icon">
+                    <svg width="32" height="32">
+                        <use xlink:href="#icon-hours"></use>
+                    </svg>
+                </div>
+                <div class="countdown-value" id="hours">--</div>
+                <div class="countdown-label">Hours</div>
+            </div>
+            <div class="countdown-unit">
+                <div class="unit-icon">
+                    <svg width="32" height="32">
+                        <use xlink:href="#icon-minutes"></use>
+                    </svg>
+                </div>
+                <div class="countdown-value" id="minutes">--</div>
+                <div class="countdown-label">Minutes</div>
+            </div>
+        </div>
+        
+        <div class="progress-section">
+            
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <div class="progress-text" id="progress-text">Day 0 of 134</div>
+        </div>
+        
+        <div class="message-label">Daily Encouragement</div>
+        <div class="encouragement-section" id="encouragement-message">
+            Loading message...
+        </div>
+        
+        <div class="footer">
+            <p>CTF © 2026 | Bright Borngreat</p>
+            <p class="last-updated">Last updated: <span id="last-updated-time">--:--</span></p>
+        </div>
+    </div>
+
+    <script>
+    // App Configuration - Critical dates and messages
+    const APP_CONFIG = {
+        // FIXED: Correct date initialization for Feb 8, 2026
+        startDate: new Date(2026, 1, 6),  // Feb 6, 2026
+        endDate: new Date(2026, 5, 20),   // June 20, 2026
+        messages: [
+            "Day one is not impressive. It's decisive.",
+            "Nothing changed overnight, except you stayed in the game.",
+            "Progress doesn't feel good. It just adds up.",
+            "You're not waiting. You're moving through it.",
+            "Another page turned. That's all this requires.",
+            "This phase is temporary, whether you enjoy it or not.",
+            "Endurance beats motivation every single time.",
+            "You don't need momentum. You need continuation.",
+            "Time is passing whether you watch it or not. This helps you watch it.",
+            "There is less ahead than there was yesterday.",
+            "You're closer than your emotions are willing to admit.",
+            "Nothing dramatic today. That's fine.",
+            "Consistency is invisible until it isn't.",
+            "You didn't quit. That's the win.",
+            "Another ordinary day completed. Ordinary days finish journeys.",
+            "This is what staying looks like.",
+            "You are doing exactly what this season demands.",
+            "Waiting ends faster when you stop fighting time.",
+            "The countdown is proof that this isn't forever.",
+            "You're not stuck. You're in transit.",
+            "This period will end even if today feels long.",
+            "You don't need inspiration to finish something finite.",
+            "A smaller number than yesterday is all that matters.",
+            "Survival mode still counts as progress.",
+            "You are closer in fact, not just in hope.",
+            "Another quiet step forward.",
+            "You didn't need to feel strong to get here.",
+            "This is how exits are earned. One day at a time.",
+            "Nothing special happened today. That's how it works.",
+            "Time is doing its job. You just have to stay present."
+        ]
+    };
+
+    // DOM Elements
+    const monthsEl = document.getElementById('months');
+    const daysEl = document.getElementById('days');
+    const hoursEl = document.getElementById('hours');
+    const minutesEl = document.getElementById('minutes');
+    const progressBarEl = document.getElementById('progress-bar');
+    const progressTextEl = document.getElementById('progress-text');
+    const encouragementMessageEl = document.getElementById('encouragement-message');
+    const lastUpdatedTimeEl = document.getElementById('last-updated-time');
+
+    // Time Calculation Logic
+    function calculateTimeRemaining() {
+        const now = new Date(); // User's local time
+        const diff = APP_CONFIG.endDate.getTime() - now.getTime();
+        
+        // If the countdown has ended
+        if (diff <= 0) {
+            return { months: 0, days: 0, hours: 0, minutes: 0 };
+        }
+        
+        // Calculate months (approximate, for display purposes)
+        const totalDays = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const months = Math.floor(totalDays / 30.44);
+        
+        // Calculate remaining days after months
+        const days = Math.floor((diff % (1000 * 60 * 60 * 24 * 30.44)) / (1000 * 60 * 60 * 24));
+        
+        // Calculate hours, minutes
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        
+        return { months, days, hours, minutes };
+    }
+
+    // Progress Bar Calculation Logic - FIXED
+    function calculateProgress() {
+        const now = new Date();
+        
+        // If before start date, progress is 0%
+        if (now < APP_CONFIG.startDate) {
+            const totalDays = Math.ceil((APP_CONFIG.endDate - APP_CONFIG.startDate) / (1000 * 60 * 60 * 24));
+            return {
+                percentage: 0,
+                currentDay: 0,
+                totalDays: totalDays
+            };
+        }
+        
+        // If after end date, progress is 100%
+        if (now >= APP_CONFIG.endDate) {
+            const totalDays = Math.ceil((APP_CONFIG.endDate - APP_CONFIG.startDate) / (1000 * 60 * 60 * 24));
+            return {
+                percentage: 100,
+                currentDay: totalDays,
+                totalDays: totalDays
+            };
+        }
+        
+        // Calculate current day in the journey (1-indexed) - FIXED
+        const elapsedMs = now.getTime() - APP_CONFIG.startDate.getTime();
+        const totalMs = APP_CONFIG.endDate.getTime() - APP_CONFIG.startDate.getTime();
+        
+        // FIXED: Use Math.ceil instead of Math.floor for partial days
+        // This ensures Day 1 starts immediately on Feb 6
+        const currentDay = Math.ceil(elapsedMs / (1000 * 60 * 60 * 24));
+        const totalDays = Math.ceil(totalMs / (1000 * 60 * 60 * 24));
+        
+        // Calculate percentage (capped at 100%)
+        const percentage = Math.min(100, (currentDay / totalDays) * 100);
+        
+        return { percentage, currentDay, totalDays };
+    }
+
+    // Encouragement Message Logic - FIXED
+    function getEncouragementMessage() {
+        const now = new Date();
+        
+        // If before start date, use first message
+        if (now < APP_CONFIG.startDate) {
+            return APP_CONFIG.messages[0];
+        }
+        
+        // Calculate days since start (0-indexed for array access)
+        const elapsedMs = now.getTime() - APP_CONFIG.startDate.getTime();
+        const daysSinceStart = Math.floor(elapsedMs / (1000 * 60 * 60 * 24));
+        
+        // FIXED: Handle edge case when daysSinceStart is 0
+        const messageIndex = daysSinceStart % APP_CONFIG.messages.length;
+        
+        return APP_CONFIG.messages[messageIndex];
+    }
+
+    // Midnight Rollover Detection Logic
+    let lastCheckedDate = new Date().getDate();
+    
+    function checkForMidnightRollover() {
+        const currentDate = new Date().getDate();
+        
+        if (currentDate !== lastCheckedDate) {
+            lastCheckedDate = currentDate;
+            return true;
+        }
+        
+        return false;
+    }
+
+    // UI Update Functions
+    function updateCountdown() {
+        const time = calculateTimeRemaining();
+        
+        monthsEl.textContent = time.months.toString().padStart(2, '0');
+        daysEl.textContent = time.days.toString().padStart(2, '0');
+        hoursEl.textContent = time.hours.toString().padStart(2, '0');
+        minutesEl.textContent = time.minutes.toString().padStart(2, '0');
+    }
+    
+    function updateProgress() {
+        const progress = calculateProgress();
+        
+        // Update progress bar with smooth animation
+        progressBarEl.style.width = `${progress.percentage}%`;
+        
+        // Update progress text
+        progressTextEl.textContent = `Day ${progress.currentDay} of ${progress.totalDays} (${progress.percentage.toFixed(1)}%)`;
+        
+        // Also update the container's CSS variable for the background glow
+        document.querySelector('.progress-section').style.setProperty('--progress-width', `${progress.percentage}%`);
+    }
+    
+    function updateEncouragementMessage() {
+        encouragementMessageEl.textContent = getEncouragementMessage();
+    }
+    
+    function updateLastUpdatedTime() {
+        const now = new Date();
+        lastUpdatedTimeEl.textContent = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    }
+    
+    // Main Update Function
+    function updateAllDisplays() {
+        updateCountdown();
+        updateProgress();
+        updateEncouragementMessage();
+        updateLastUpdatedTime();
+    }
+
+    // Initialization - FIXED: Use window.onload instead of DOMContentLoaded
+    function initApp() {
+        // Set initial values
+        updateAllDisplays();
+        
+        // Debug log to see what's happening
+        console.log('Current date:', new Date().toLocaleDateString());
+        console.log('Start date:', APP_CONFIG.startDate.toLocaleDateString());
+        console.log('Days calculated:', calculateProgress().currentDay);
+        console.log('Message index:', Math.floor((new Date() - APP_CONFIG.startDate) / (1000 * 60 * 60 * 24)));
+        
+        // Update countdown every minute
+        setInterval(() => {
+            updateCountdown();
+            updateLastUpdatedTime();
+        }, 60000);
+        
+        // Check for midnight rollover every hour
+        setInterval(() => {
+            if (checkForMidnightRollover()) {
+                updateProgress();
+                updateEncouragementMessage();
+            }
+            updateLastUpdatedTime();
+        }, 3600000);
+        
+        console.log('App initialized.');
+    }
+
+    // Start the app when page fully loads
+    window.onload = initApp;
+</script>
+</body>
+</html>
