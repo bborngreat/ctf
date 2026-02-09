@@ -637,10 +637,10 @@
         <div class="particle"></div>
     </div>
 
-    <!-- SVG Icons (hidden, will be used via JavaScript) -->
+    <!-- SVG Icons -->
     <svg style="display: none;">
-        <symbol id="icon-months" viewBox="0 0 24 24">
-            <path fill="currentColor" d="M19,4H18V2H16V4H8V2H6V4H5C3.89,4 3,4.9 3,6V20A2,2 0 0,0 5,22H19A2,2 0 0,0 21,20V6A2,2 0 0,0 19,4M19,20H5V10H19V20M19,8H5V6H19V8M12,13H17V18H12V13Z"/>
+        <symbol id="icon-weeks" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M19,4H18V2H16V4H8V2H6V4H5C3.89,4 3,4.9 3,6V20A2,2 0 0,0 5,22H19A2,2 0 0,0 21,20V6A2,2 0 0,0 19,4M19,20H5V10H19V20M19,8H5V6H19V8M9,14H7V12H9V14M13,14H11V12H13V14M17,14H15V12H17V14M9,18H7V16H9V18M13,18H11V16H13V18M17,18H15V16H17V18Z"/>
         </symbol>
         <symbol id="icon-days" viewBox="0 0 24 24">
             <path fill="currentColor" d="M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
@@ -659,15 +659,18 @@
         <p class="subtitle">Graduation: June 20, 2026</p>
         
         <div class="countdown-container">
+            <!-- Weeks Unit -->
             <div class="countdown-unit">
                 <div class="unit-icon">
                     <svg width="32" height="32">
-                        <use xlink:href="#icon-months"></use>
+                        <use xlink:href="#icon-weeks"></use>
                     </svg>
                 </div>
-                <div class="countdown-value" id="months">--</div>
-                <div class="countdown-label">Months</div>
+                <div class="countdown-value" id="weeks">--</div>
+                <div class="countdown-label">Weeks</div>
             </div>
+            
+            <!-- Days Unit -->
             <div class="countdown-unit">
                 <div class="unit-icon">
                     <svg width="32" height="32">
@@ -677,6 +680,8 @@
                 <div class="countdown-value" id="days">--</div>
                 <div class="countdown-label">Days</div>
             </div>
+            
+            <!-- Hours Unit -->
             <div class="countdown-unit">
                 <div class="unit-icon">
                     <svg width="32" height="32">
@@ -686,6 +691,8 @@
                 <div class="countdown-value" id="hours">--</div>
                 <div class="countdown-label">Hours</div>
             </div>
+            
+            <!-- Minutes Unit -->
             <div class="countdown-unit">
                 <div class="unit-icon">
                     <svg width="32" height="32">
@@ -698,11 +705,10 @@
         </div>
         
         <div class="progress-section">
-            
             <div class="progress-bar-container">
                 <div class="progress-bar" id="progress-bar"></div>
             </div>
-            <div class="progress-text" id="progress-text">Day 0 of 134</div>
+            <div class="progress-text" id="progress-text">Day 0 of 140</div>
         </div>
         
         <div class="message-label">Daily Encouragement</div>
@@ -719,9 +725,9 @@
     <script>
     // App Configuration - Critical dates and messages
     const APP_CONFIG = {
-        // FIXED: Correct date initialization for Feb 8, 2026
-        startDate: new Date(2026, 1, 6),  // Feb 6, 2026
-        endDate: new Date(2026, 5, 20),   // June 20, 2026
+        // UPDATED: Start date changed to Feb 1, 2026 (month is 0-indexed)
+        startDate: new Date(2026, 1, 1),   // Feb 1, 2026 (midnight)
+        endDate: new Date(2026, 5, 20),    // June 20, 2026
         messages: [
             "Day one is not impressive. It's decisive.",
             "Nothing changed overnight, except you stayed in the game.",
@@ -757,7 +763,7 @@
     };
 
     // DOM Elements
-    const monthsEl = document.getElementById('months');
+    const weeksEl = document.getElementById('weeks');    // CHANGED from monthsEl
     const daysEl = document.getElementById('days');
     const hoursEl = document.getElementById('hours');
     const minutesEl = document.getElementById('minutes');
@@ -766,31 +772,30 @@
     const encouragementMessageEl = document.getElementById('encouragement-message');
     const lastUpdatedTimeEl = document.getElementById('last-updated-time');
 
-    // Time Calculation Logic
+    // Time Calculation Logic - UPDATED for weeks instead of months
     function calculateTimeRemaining() {
-        const now = new Date(); // User's local time
+        const now = new Date();
         const diff = APP_CONFIG.endDate.getTime() - now.getTime();
         
-        // If the countdown has ended
         if (diff <= 0) {
-            return { months: 0, days: 0, hours: 0, minutes: 0 };
+            return { weeks: 0, days: 0, hours: 0, minutes: 0 };
         }
         
-        // Calculate months (approximate, for display purposes)
-        const totalDays = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const months = Math.floor(totalDays / 30.44);
+        // Calculate weeks
+        const weeks = Math.floor(diff / (1000 * 60 * 60 * 24 * 7));
         
-        // Calculate remaining days after months
-        const days = Math.floor((diff % (1000 * 60 * 60 * 24 * 30.44)) / (1000 * 60 * 60 * 24));
+        // Calculate remaining days after weeks
+        const remainingDays = diff % (1000 * 60 * 60 * 24 * 7);
+        const days = Math.floor(remainingDays / (1000 * 60 * 60 * 24));
         
         // Calculate hours, minutes
         const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         
-        return { months, days, hours, minutes };
+        return { weeks, days, hours, minutes };
     }
 
-    // Progress Bar Calculation Logic - FIXED
+    // Progress Bar Calculation Logic - UPDATED for Feb 1 start
     function calculateProgress() {
         const now = new Date();
         
@@ -814,13 +819,13 @@
             };
         }
         
-        // Calculate current day in the journey (1-indexed) - FIXED
+        // Calculate current day in the journey (1-indexed)
         const elapsedMs = now.getTime() - APP_CONFIG.startDate.getTime();
         const totalMs = APP_CONFIG.endDate.getTime() - APP_CONFIG.startDate.getTime();
         
-        // FIXED: Use Math.ceil instead of Math.floor for partial days
-        // This ensures Day 1 starts immediately on Feb 6
-        const currentDay = Math.ceil(elapsedMs / (1000 * 60 * 60 * 24));
+        // Using Math.floor for partial days, then add 1 for 1-indexing
+        // Day 1 starts immediately on Feb 1
+        const currentDay = Math.floor(elapsedMs / (1000 * 60 * 60 * 24)) + 1;
         const totalDays = Math.ceil(totalMs / (1000 * 60 * 60 * 24));
         
         // Calculate percentage (capped at 100%)
@@ -829,7 +834,7 @@
         return { percentage, currentDay, totalDays };
     }
 
-    // Encouragement Message Logic - FIXED
+    // Encouragement Message Logic - UPDATED for Feb 1 start
     function getEncouragementMessage() {
         const now = new Date();
         
@@ -842,7 +847,7 @@
         const elapsedMs = now.getTime() - APP_CONFIG.startDate.getTime();
         const daysSinceStart = Math.floor(elapsedMs / (1000 * 60 * 60 * 24));
         
-        // FIXED: Handle edge case when daysSinceStart is 0
+        // Use daysSinceStart directly to match array indexing
         const messageIndex = daysSinceStart % APP_CONFIG.messages.length;
         
         return APP_CONFIG.messages[messageIndex];
@@ -862,11 +867,11 @@
         return false;
     }
 
-    // UI Update Functions
+    // UI Update Functions - UPDATED
     function updateCountdown() {
         const time = calculateTimeRemaining();
         
-        monthsEl.textContent = time.months.toString().padStart(2, '0');
+        weeksEl.textContent = time.weeks.toString().padStart(2, '0');
         daysEl.textContent = time.days.toString().padStart(2, '0');
         hoursEl.textContent = time.hours.toString().padStart(2, '0');
         minutesEl.textContent = time.minutes.toString().padStart(2, '0');
@@ -902,16 +907,20 @@
         updateLastUpdatedTime();
     }
 
-    // Initialization - FIXED: Use window.onload instead of DOMContentLoaded
+    // Initialization
     function initApp() {
         // Set initial values
         updateAllDisplays();
         
         // Debug log to see what's happening
-        console.log('Current date:', new Date().toLocaleDateString());
+        console.log('App Configuration:');
         console.log('Start date:', APP_CONFIG.startDate.toLocaleDateString());
-        console.log('Days calculated:', calculateProgress().currentDay);
-        console.log('Message index:', Math.floor((new Date() - APP_CONFIG.startDate) / (1000 * 60 * 60 * 24)));
+        console.log('End date:', APP_CONFIG.endDate.toLocaleDateString());
+        console.log('Today:', new Date().toLocaleDateString());
+        
+        const progress = calculateProgress();
+        console.log('Progress:', progress.currentDay, '/', progress.totalDays, 'days');
+        console.log('Total days between dates:', progress.totalDays);
         
         // Update countdown every minute
         setInterval(() => {
@@ -928,12 +937,12 @@
             updateLastUpdatedTime();
         }, 3600000);
         
-        console.log('App initialized.');
+        console.log('Countdown App initialized with Weeks instead of Months.');
+        console.log('Start: Feb 1, 2026 | End: Jun 20, 2026');
     }
 
     // Start the app when page fully loads
     window.onload = initApp;
-</script>
+    </script>
 </body>
-
 </html>
