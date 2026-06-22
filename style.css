@@ -1,0 +1,393 @@
+/* --- LOCAL FONT FACE DECLARATIONS --- */
+@font-face {
+    font-family: 'Parkinsans';
+    src: url('Parkinsans-Bold.ttf') format('truetype');
+    font-weight: 400; /* Regular maps cleanly across standard weights */
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('Poppins-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* --- CSS VARIABLES & THEMING --- */
+:root {
+    --bg-main: #0B0F19;
+    --bg-card: rgba(22, 28, 45, 0.6);
+    --border-subtle: rgba(255, 255, 255, 0.06);
+    --text-primary: #F3F4F6;
+    --text-secondary: #9CA3AF;
+    --accent-gradient: linear-gradient(135deg, #6366F1, #8B5CF6, #EC4899);
+    --clear-gradient: linear-gradient(135deg, #EF4444, #F43F5E);
+    --accent-blue: #3B82F6;
+    --accent-green: #10B981;
+    --font-heading: 'Parkinsans', sans-serif;
+    --font-body: 'Poppins', sans-serif;
+    --transition-smooth: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* --- RESET & LAYOUT --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    overflow-x: hidden;
+}
+
+/* App Viewport Container */
+.app-container {
+    width: 100%;
+    max-width: 480px;
+    min-height: 100vh;
+    padding: 2.5rem 1.5rem 7rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* --- HEADER --- */
+.app-header {
+    margin-top: 1rem;
+}
+
+.app-title {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+    background: linear-gradient(120deg, #FFFFFF 40%, var(--text-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.app-subtitle {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+    font-weight: 300;
+}
+
+/* --- TASK LIST & ITEMS --- */
+.todo-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.todo-item {
+    display: flex;
+    align-items: center;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 1.1rem 1.2rem;
+    border-radius: 16px;
+    gap: 1rem;
+    transition: var(--transition-smooth);
+    animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Custom Checkbox Engine */
+.checkbox-container {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.custom-checkbox {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 24px;
+    height: 24px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transition: var(--transition-smooth);
+}
+
+.checkbox-container:hover .custom-checkbox {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
+}
+
+.checkbox-container input:checked ~ .custom-checkbox {
+    background: var(--accent-gradient);
+    border-color: transparent;
+    transform: scale(0.95);
+}
+
+.custom-checkbox::after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 8px;
+    top: 4px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.checkbox-container input:checked ~ .custom-checkbox::after {
+    display: block;
+}
+
+/* Task Typography Label & Editing Inputs */
+.todo-text {
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: var(--text-primary);
+    transition: var(--transition-smooth);
+    word-break: break-word;
+    user-select: none;
+    flex-grow: 1;
+    cursor: text;
+}
+
+/* Premium Dynamic Inline Edit Field */
+.edit-input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.4);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    outline: none;
+    flex-grow: 1;
+}
+
+.edit-input:focus {
+    border-bottom-color: var(--accent-blue);
+}
+
+/* Complete Interactive Modifiers */
+.todo-item.completed {
+    opacity: 0.4;
+    border-color: transparent;
+    background: rgba(22, 28, 45, 0.2);
+    transform: scale(0.98);
+}
+
+.todo-item.completed .todo-text {
+    text-decoration: line-through;
+    color: var(--text-secondary);
+    cursor: not-allowed;
+}
+
+/* --- FLOATING ACTION BUTTONS (FAB) --- */
+.fab-btn {
+    position: fixed;
+    bottom: 2rem;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: none;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 100;
+    transition: var(--transition-smooth);
+}
+
+/* Left Configuration (Add Task) */
+.fab-left {
+    left: 2rem;
+    background: var(--accent-gradient);
+    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
+}
+
+.fab-left:hover {
+    box-shadow: 0 12px 28px rgba(139, 92, 246, 0.5);
+}
+
+/* Right Configuration (Clear/Reset Trash Button) */
+.fab-right {
+    right: 2rem;
+    background: var(--clear-gradient);
+    box-shadow: 0 8px 24px rgba(239, 68, 68, 0.3);
+}
+
+.fab-right:hover {
+    box-shadow: 0 12px 28px rgba(239, 68, 68, 0.45);
+}
+
+.fab-btn:hover {
+    transform: translateY(-4px) scale(1.05);
+}
+
+.fab-btn:active {
+    transform: translateY(-1px) scale(0.95);
+}
+
+.plus-icon, .trash-icon {
+    width: 24px;
+    height: 24px;
+}
+
+/* --- OVERLAY MODALS BASE --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(4, 6, 12, 0.8);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1.5rem;
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    background: #161C2D;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 1.75rem;
+    width: 100%;
+    max-width: 400px;
+    transform: scale(0.9) translateY(20px);
+    transition: var(--transition-smooth);
+}
+
+.modal-overlay.active .modal-content {
+    transform: scale(1) translateY(0);
+}
+
+/* Input Modal Details */
+.modal-title {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+}
+
+#task-input {
+    width: 100%;
+    background: #0B0F19;
+    border: 1px solid var(--border-subtle);
+    padding: 1rem;
+    border-radius: 12px;
+    color: white;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    outline: none;
+    margin-bottom: 1.5rem;
+    transition: border-color 0.2s ease;
+}
+
+#task-input:focus {
+    border-color: var(--accent-blue);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.btn {
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: var(--transition-smooth);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--text-secondary);
+}
+
+.btn-secondary:hover {
+    color: white;
+}
+
+.btn-primary {
+    background: var(--text-primary);
+    color: var(--bg-main);
+}
+
+.btn-primary:hover {
+    background: white;
+    transform: translateY(-2px);
+}
+
+/* --- CELEBRATION MODAL SPECIALITIES --- */
+.celebration-overlay {
+    background: rgba(4, 6, 12, 0.4);
+}
+
+.celebration-card {
+    text-align: center;
+    max-width: 320px;
+    padding: 2.5rem 1.5rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.celebration-emoji {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    display: inline-block;
+    animation: popScale 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.celebration-text {
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.4;
+}
+
+@keyframes popScale {
+    0% { transform: scale(0); }
+    100% { transform: scale(1); }
+}
